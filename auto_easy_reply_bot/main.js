@@ -3,14 +3,16 @@ var ACCESS_TOKEN = 'token';
 
 function doPost(e) {
     var event = JSON.parse(e.postData.contents).events[0];
+    // WebHookで受信した応答用Token
     var replyToken = event.replyToken;
+
+    // ユーザ情報を取得
+    var userId = event.source.userId;
+    var nickname = getUserProfile(userId);
 
     // シート取得
     var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
     var sheet = ss.getSheetByName('登録ユーザ一覧');
-
-    // WebHookで受信した応答用Token
-    var replyToken = JSON.parse(e.postData.contents).events[0].replyToken;
 
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
@@ -21,8 +23,6 @@ function doPost(e) {
     if (event.type == 'message') {
         // ユーザーのメッセージを取得
         var userMessage = JSON.parse(e.postData.contents).events[0].message.text;
-
-
         sendMessage(replyToken, userMessage);
     }
     return ContentService.createTextOutput(JSON.stringify({ 'content': 'post ok' })).setMimeType(ContentService.MimeType.JSON);
@@ -57,4 +57,15 @@ function sendMessage(replyToken, message) {
         }),
     });
     return 0;
+}
+
+// profileを取得してくる関数
+function getUserProfile(userId) {
+    var url = 'https://api.line.me/v2/bot/profile/' + userId;
+    var userProfile = UrlFetchApp.fetch(url, {
+        'headers': {
+            'Authorization': 'Bearer ' + ACCESS_TOKEN,
+        },
+    })
+    return JSON.parse(userProfile).displayName;
 }
