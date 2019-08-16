@@ -2,10 +2,15 @@
 var ACCESS_TOKEN = 'token';
 
 function doPost(e) {
+    // シート取得
+    var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
+    var sheet = ss.getSheetByName('sheet1');
+
     // WebHookで受信した応答用Token
     var replyToken = JSON.parse(e.postData.contents).events[0].replyToken;
     // ユーザーのメッセージを取得
     var userMessage = JSON.parse(e.postData.contents).events[0].message.text;
+
     // 応答メッセージ用のAPI URL
     var url = 'https://api.line.me/v2/bot/message/reply';
 
