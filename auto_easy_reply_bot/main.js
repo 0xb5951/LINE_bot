@@ -17,6 +17,18 @@ function doPost(e) {
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
         followMessage(replyToken);
+        // 最終行を取得
+        var last_row = findLastRow(sheet, 'A');
+
+        //　書き込む場所を決定する
+        var write_cell_a = 'A' + (last_row).toString(10);
+        var write_cell_b = 'B' + (last_row).toString(10);
+
+
+        // データ入力
+        sheet.getRange(write_cell_a).setValue(userId);
+        sheet.getRange(write_cell_b).setValue(nickname);
+
     }
 
     // テキストが送信された時の処理
@@ -68,4 +80,17 @@ function getUserProfile(userId) {
         },
     })
     return JSON.parse(userProfile).displayName;
+}
+
+// 指定列の[最終行の行番号」を返す
+// (値が途切れていないことが前提)
+function findLastRow(sheet, col) {
+
+    //指定の列を二次元配列に格納する※シート全体の最終行までとする
+    var ColValues = sheet.getRange((col + ':' + col)).getValues()
+
+    //二次元配列のなかで、データが存在する要素のlengthを取得する
+    var lastRow = ColValues.filter(String).length;
+
+    return lastRow + 1;
 }
