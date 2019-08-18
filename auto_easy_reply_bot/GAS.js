@@ -57,31 +57,32 @@ function doPost(e) {
         // 先行体験入力中かつ入力完了していないなら
         if (getPreExpStatus(sheet, userId) == 1 && checkFormEndFlag(sheet, userId) == 0 ) {
 
-            // // 楽器が未入力
-            // if (getPreExpInstu(sheet, userId) == 0) {
-            //     // 楽器の情報を書き込む
-            //     sendMessage(replyToken, "習いたい楽器は?");
-            //     return;
-            // }
-
             // 全部が未入力
-            if (getPreExpInstu(sheet, userId) == 0 &&getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
+            if (getPreExpInstu(sheet, userId) == 0 && getPreExpAge(sheet, userId) == 0 &&getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
                 setPreExpInstu(sheet, userId, userMessage);
                 // 楽器の情報を書き込む
-                sendMessage(replyToken, "②居住地を教えてください！(都道府県のみ)");
+                sendMessage(replyToken, "②あなたの年齢は?");
+                return;
+            }
+
+            // 楽器以外が未入力
+            if (getPreExpAge(sheet, userId) == 0 &&getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
+                setPreExpAge(sheet, userId, userMessage);
+                // 楽器の情報を書き込む
+                sendMessage(replyToken, "③居住地を教えてください！(都道府県のみ)");
                 return;
             }
 
             // 楽器以外が未入力
             if (getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
                 setPreExpPref(sheet, userId, userMessage);
-                sendMessage(replyToken, "③最初に答えた楽器の経験年数を教えてください！");
+                sendMessage(replyToken, "④最初に答えた楽器の経験年数を教えてください！");
                 return;
             }
 
             if (getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
                 setPreExpYear(sheet, userId, userMessage);
-                sendMessage(replyToken, "④楽器に関する悩みを教えてください！");
+                sendMessage(replyToken, "⑤楽器に関する悩みを教えてください！");
                 return;
             }
 
@@ -258,7 +259,7 @@ function getPreExpYear(sheet, userId) {
 // 今の悩みを入力する
 function setPreExpIssue(sheet, userId, value) {
     var writeRow = findUserId(sheet, userId);
-  var writeCell = 'I' + (writeRow).toString(10);
+  var writeCell = 'H' + (writeRow).toString(10);
   
     sheet.getRange(writeCell).setValue(value);
 }
@@ -266,7 +267,7 @@ function setPreExpIssue(sheet, userId, value) {
 // 悩みが入力されているか
 function getPreExpIssue(sheet, userId) {
     var targetRow = findUserId(sheet, userId);
-    var targetCell = 'I' + (targetRow).toString(10);
+    var targetCell = 'H' + (targetRow).toString(10);
 
     if (sheet.getRange(targetCell).isBlank()) {
         return 0;
