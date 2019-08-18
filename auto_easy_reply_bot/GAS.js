@@ -56,7 +56,7 @@ function doPost(e) {
 
 // 登録時のアンケート導線
 function sendFollowMessage(replyToken) {
-    var sendtext = "「いつでも、どこでも、何度でも。プロによる楽器のアドバイス」\n NOIAB（ノイア）への事前登録が完了しました！ここでは、リリース時のご案内や、先行体験の情報をお届けします! 通知が多いと感じた方は、この画面内のトーク設定より「通知」をOFFにしてみてくださいね\uDBC0\uDC77";
+    var sendtext = "「いつでも、どこでも、なんどでも。プロによる楽器のアドバイス」\n\nNOIAB（ノイア）への事前登録が完了しました！\n\nここでは、リリース時のご案内や、先行体験の情報をお届けします! 通知が多いと感じた方は、この画面内のトーク設定より「通知」をOFFにしてみてくださいね\uDBC0\uDC77";
     sendPriorExpText(replyToken, sendtext);
 }
 
@@ -150,7 +150,7 @@ function sendPriorExpText(replyToken, sendtext) {
               "contents": [
                 {
                   "type": "text",
-                  "text": "hello"
+                  "text": "NOIABの先行体験をご希望の方はボタンをクリック！当選した方には、先行体験のご案内を送らさせていただきます！"
                 },
                 {
                   "type": "button",
