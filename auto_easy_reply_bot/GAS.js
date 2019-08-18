@@ -9,6 +9,8 @@ function test() {
     // ユーザ情報を取得
     var userId = 'gdageageagea2eqr3';
     var nickName = 'teq2432';
+    Logger.log(userId);
+    Logger.log(nickName);
   
   // ユーザIDが登録されてなかったら
   if (0 == findUserId(sheet, userId)) {
@@ -29,11 +31,12 @@ function doPost(e) {
     // シート取得
     var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
     var sheet = ss.getSheetByName('登録ユーザ一覧');
-
-          // ユーザIDが登録されてなかったら
-        if (0 == findUserId(sheet, userId)) {
-            addNewUserProfile(sheet, userId, nickName);
-        }
+  
+    // ユーザIDが登録されてなかったら
+    if (0 == findUserId(sheet, userId)) {
+        addNewUserProfile(sheet, userId, nickName);
+        sendMessage(replyToken, '未登録');
+    }
   
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
@@ -77,7 +80,6 @@ function sendMessage(replyToken, message) {
             }],
         }),
     });
-    return 0;
 }
 
 // userIdとnickNameを登録する
@@ -116,11 +118,11 @@ function findLastRow(sheet, col) {
 }
 
 // userIdが存在しているかを確認する
-function findUserId(sheet, userId) {
+function findUserId(sheet,userId) {
     var date = sheet.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
  
     for(var i=1;i<date.length;i++){
-      if(date[i][col-1] === userId){
+      if(date[i][0] === userId){
         return 1+i;
       }
     }
