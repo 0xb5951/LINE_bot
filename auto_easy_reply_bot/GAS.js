@@ -39,9 +39,9 @@ function doPost(e) {
     }
 
     // 先行体験ボタンが押されたときの処理
-    if (event.type == 'postback' && event.postback.data == "pushButton") {
+    if (event.type == 'postback' && event.postback.data == "pushButton" && getPreExpStatus(sheet, userId) == 0) {
         setPreExpFlag(sheet, userId);
-        sendMessage(replyToken, "習いたい楽器は？");
+        sendMessage(replyToken, "①アドバイスを受けてみたい楽器は？");
     }
 
     // ユーザーにbotがフォローされた場合の処理
@@ -68,20 +68,20 @@ function doPost(e) {
             if (getPreExpInstu(sheet, userId) == 0 &&getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
                 setPreExpInstu(sheet, userId, userMessage);
                 // 楽器の情報を書き込む
-                sendMessage(replyToken, "居住地教えてください。(都道府県のみ)");
+                sendMessage(replyToken, "②居住地を教えてください！(都道府県のみ)");
                 return;
             }
 
             // 楽器以外が未入力
             if (getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
                 setPreExpPref(sheet, userId, userMessage);
-                sendMessage(replyToken, "楽器の経験年数を教えてください。");
+                sendMessage(replyToken, "③最初に答えた楽器の経験年数を教えてください！");
                 return;
             }
 
             if (getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
                 setPreExpYear(sheet, userId, userMessage);
-                sendMessage(replyToken, "今の悩みは？");
+                sendMessage(replyToken, "④楽器に関する悩みを教えてください！");
                 return;
             }
 
@@ -94,11 +94,9 @@ function doPost(e) {
             // 登録完了フラグをONにする
             setFormEndFlag(sheet, userId);
             // 完了メッセージを送信する
-            sendMessage(replyToken, "ご回答ありがとうございます！以上で先行体験申し込みは完了です！当選連絡までしばらくお待ちください！");
+            sendMessage(replyToken, "ご回答ありがとうございます！\n以上で先行体験申し込みは完了です！\uDBC0\uDC2D \n当選連絡までしばらくお待ちください！");
         }
 
-
-        sendMessage(replyToken, userMessage);
     }
     return ContentService.createTextOutput(JSON.stringify({ 'content': 'post ok' })).setMimeType(ContentService.MimeType.JSON);
 }
@@ -106,7 +104,7 @@ function doPost(e) {
 
 // 登録時のアンケート導線
 function sendFollowMessage(replyToken) {
-    var sendtext = "「いつでも、どこでも、なんどでも。プロによる楽器のアドバイス」\n\nNOIAB（ノイア）への事前登録が完了しました！\n\nここでは、リリース時のご案内や、先行体験の情報をお届けします! 通知が多いと感じた方は、この画面内のトーク設定より「通知」をOFFにしてみてくださいね\uDBC0\uDC77";
+    var sendtext = "「いつでも、どこでも、なんどでも。プロによる楽器のアドバイス」\n\nNOIAB（ノイア）への事前登録が完了しました！\uDBC0\uDC2D\n\nここでは、リリース時のご案内や、先行体験の情報をお届けします! 通知が多いと感じた方は、この画面内のトーク設定より「通知」をOFFにしてみてくださいね\uDBC0\uDC77";
     sendPriorExpText(replyToken, sendtext);
 }
 
@@ -303,7 +301,7 @@ function sendPriorExpText(replyToken, sendtext) {
             },
           {
           "type": "flex",
-          "altText": "NOIABの先行体験をご希望の方はボタンをクリック！当選した方には、先行体験のご案内を送らさせていただきます！",
+          "altText": "NOIABの先行体験をご希望の方はボタンをクリック！\n当選した方には、先行体験のご案内を送らさせていただきます！",
           "contents":
           {
             "type": "bubble",
@@ -314,7 +312,7 @@ function sendPriorExpText(replyToken, sendtext) {
               "contents": [
                 {
                   "type": "text",
-                  "text": "NOIABの先行体験をご希望の方はボタンをクリック！当選した方には、先行体験のご案内を送らさせていただきます！",
+                  "text": "NOIABの先行体験をご希望の方はボタンをクリック！\n当選した方には、先行体験のご案内を送らさせていただきます！",
                   "wrap": true
                 },
                 {
