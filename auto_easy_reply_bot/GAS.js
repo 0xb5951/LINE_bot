@@ -19,7 +19,7 @@ function test() {
   }
   setPreExpFlag(sheet, userId);
 }
-
+ 
 function doPost(e) {
     var event = JSON.parse(e.postData.contents).events[0];
     // WebHookで受信した応答用Token
@@ -44,7 +44,6 @@ function doPost(e) {
         sendMessage(replyToken, "使っている楽器を教えて！");
     }
 
-    sendFollowMessage(replyToken); 
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
         sendFollowMessage(replyToken);
@@ -54,6 +53,38 @@ function doPost(e) {
     if (event.type == 'message') {
         // ユーザーのメッセージを取得
         var userMessage = JSON.parse(e.postData.contents).events[0].message.text;
+
+        // 先行体験入力中かつ入力完了していないなら
+        if (getPreExpStatus(sheet, userId) == 1 && checkFormEndFlag(sheet, userId) == 0 ) {
+            
+            // 住所が未入力
+            if (getPreExpPref(sheet, userId) == 0 ) {
+                // 楽器の情報を書き込む
+                sendMessage(replyToken, "居住地教えてください。(都道府県のみ)");
+            }
+
+            // 経験年数が未入力
+            if (getPreExpYear(sheet, userId) == 0 ) {
+                // 住所の情報を書き込む
+                sendMessage(replyToken, "楽器の経験年数を教えてください。");
+            }
+            
+            // 今の悩みが未入力
+            if (getPreExpIssue(sheet, userId) == 0 ) {
+                // 経験年数の情報を書き込む
+                sendMessage(replyToken, "楽器の経験年数を教えてください。");
+            }
+
+            // すべての項目が入力されている
+            if (getPreExpInstu(sheet, userId) && getPreExpPref(sheet, userId) && getPreExpYear(sheet, userId) && getPreExpIssue(sheet, userId)){
+                // 登録完了フラグをONにする
+                setFormEndFlag(sheet, userId);
+                // 完了メッセージを送信する
+                sendMessage(replyToken, "ご回答ありがとうございます！以上で先行体験申し込みは完了です！当選連絡までしばらくお待ちください！");
+            }
+        }
+
+
         sendMessage(replyToken, userMessage);
     }
     return ContentService.createTextOutput(JSON.stringify({ 'content': 'post ok' })).setMimeType(ContentService.MimeType.JSON);
@@ -106,7 +137,81 @@ function setPreExpFlag(sheet, userId) {
   
     sheet.getRange(writeCell).setValue(1);
 }
- 
+
+// 先行体験フラグが立っているか
+function getPreExpStatus(sheet, userId) {
+    var targetRow = findUserId(sheet, userId);
+    var targetCell = 'C' + (targetRow).toString(10);
+
+    if (sheet.getRange(targetCell).isBlank()) {
+        return 0;
+    }
+    return 1;
+}
+
+// 登録完了フラグを立てる
+function setFormEndFlag(sheet, userId) {
+    var writeRow = findUserId(sheet, userId);
+  var writeCell = 'I' + (writeRow).toString(10);
+  
+    sheet.getRange(writeCell).setValue(1);
+}
+
+// 登録完了フラグが立っているか
+function checkFormEndFlag(sheet, userId) {
+    var writeRow = findUserId(sheet, userId);
+    var targetCell = 'I' + (writeRow).toString(10);
+  
+    if (sheet.getRange(targetCell).isBlank()) {
+        return 0;
+    }
+    return 1;
+}
+
+// 楽器が入力されているか
+function getPreExpInstu(sheet, userId) {
+    var targetRow = findUserId(sheet, userId);
+    var targetCell = 'D' + (targetRow).toString(10);
+
+    if (sheet.getRange(targetCell).isBlank()) {
+        return 0;
+    }
+    return 1;
+}
+
+// 都道府県が入力されているか
+function getPreExpPref(sheet, userId) {
+    var targetRow = findUserId(sheet, userId);
+    var targetCell = 'E' + (targetRow).toString(10);
+
+    if (sheet.getRange(targetCell).isBlank()) {
+        return 0;
+    }
+    return 1;
+}
+
+// 経験年数が入力されているか
+function getPreExpYear(sheet, userId) {
+    var targetRow = findUserId(sheet, userId);
+    var targetCell = 'F' + (targetRow).toString(10);
+
+    if (sheet.getRange(targetCell).isBlank()) {
+        return 0;
+    }
+    return 1;
+}
+
+// 悩みが入力されているか
+function getPreExpIssue(sheet, userId) {
+    var targetRow = findUserId(sheet, userId);
+    var targetCell = 'G' + (targetRow).toString(10);
+
+    if (sheet.getRange(targetCell).isBlank()) {
+        return 0;
+    }
+    return 1;
+}
+
 // ユーザーネームを取得してくる関数
 function getUserProfile(userId) {
     var url = 'https://api.line.me/v2/bot/profile/' + userId;
