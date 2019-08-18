@@ -41,7 +41,7 @@ function doPost(e) {
     // 先行体験ボタンが押されたときの処理
     if (event.type == 'postback' && event.postback.data == "pushButton") {
         setPreExpFlag(sheet, userId);
-        sendMessage(replyToken, "使っている楽器を教えて！");
+        sendMessage(replyToken, "習いたい楽器は？");
     }
 
     // ユーザーにbotがフォローされた場合の処理
@@ -56,32 +56,45 @@ function doPost(e) {
 
         // 先行体験入力中かつ入力完了していないなら
         if (getPreExpStatus(sheet, userId) == 1 && checkFormEndFlag(sheet, userId) == 0 ) {
-            
-            // 住所が未入力
-            if (getPreExpPref(sheet, userId) == 0 ) {
+
+            // // 楽器が未入力
+            // if (getPreExpInstu(sheet, userId) == 0) {
+            //     // 楽器の情報を書き込む
+            //     sendMessage(replyToken, "習いたい楽器は?");
+            //     return;
+            // }
+
+            // 全部が未入力
+            if (getPreExpInstu(sheet, userId) == 0 &&getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
+                setPreExpInstu(sheet, userId, userMessage);
                 // 楽器の情報を書き込む
                 sendMessage(replyToken, "居住地教えてください。(都道府県のみ)");
+                return;
             }
 
-            // 経験年数が未入力
-            if (getPreExpYear(sheet, userId) == 0 ) {
-                // 住所の情報を書き込む
+            // 楽器以外が未入力
+            if (getPreExpPref(sheet, userId) == 0 && getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
+                setPreExpPref(sheet, userId, userMessage);
                 sendMessage(replyToken, "楽器の経験年数を教えてください。");
+                return;
             }
-            
+
+            if (getPreExpYear(sheet, userId) == 0 && getPreExpIssue(sheet, userId) == 0) {
+                setPreExpYear(sheet, userId, userMessage);
+                sendMessage(replyToken, "今の悩みは？");
+                return;
+            }
+
             // 今の悩みが未入力
             if (getPreExpIssue(sheet, userId) == 0 ) {
-                // 経験年数の情報を書き込む
-                sendMessage(replyToken, "楽器の経験年数を教えてください。");
+                // 今の悩みを書き込む
+                setPreExpIssue(sheet, userId, userMessage);
             }
 
-            // すべての項目が入力されている
-            if (getPreExpInstu(sheet, userId) && getPreExpPref(sheet, userId) && getPreExpYear(sheet, userId) && getPreExpIssue(sheet, userId)){
-                // 登録完了フラグをONにする
-                setFormEndFlag(sheet, userId);
-                // 完了メッセージを送信する
-                sendMessage(replyToken, "ご回答ありがとうございます！以上で先行体験申し込みは完了です！当選連絡までしばらくお待ちください！");
-            }
+            // 登録完了フラグをONにする
+            setFormEndFlag(sheet, userId);
+            // 完了メッセージを送信する
+            sendMessage(replyToken, "ご回答ありがとうございます！以上で先行体験申し込みは完了です！当選連絡までしばらくお待ちください！");
         }
 
 
@@ -168,6 +181,14 @@ function checkFormEndFlag(sheet, userId) {
     return 1;
 }
 
+// 楽器情報を入力する
+function setPreExpInstu(sheet, userId, value) {
+    var writeRow = findUserId(sheet, userId);
+  var writeCell = 'D' + (writeRow).toString(10);
+  
+    sheet.getRange(writeCell).setValue(value);
+}
+
 // 楽器が入力されているか
 function getPreExpInstu(sheet, userId) {
     var targetRow = findUserId(sheet, userId);
@@ -177,6 +198,14 @@ function getPreExpInstu(sheet, userId) {
         return 0;
     }
     return 1;
+}
+
+// 都道府県を入力する
+function setPreExpPref(sheet, userId, value) {
+    var writeRow = findUserId(sheet, userId);
+  var writeCell = 'E' + (writeRow).toString(10);
+  
+    sheet.getRange(writeCell).setValue(value);
 }
 
 // 都道府県が入力されているか
@@ -190,6 +219,14 @@ function getPreExpPref(sheet, userId) {
     return 1;
 }
 
+// 経験年数を入力する
+function setPreExpYear(sheet, userId, value) {
+    var writeRow = findUserId(sheet, userId);
+  var writeCell = 'F' + (writeRow).toString(10);
+  
+    sheet.getRange(writeCell).setValue(value);
+}
+
 // 経験年数が入力されているか
 function getPreExpYear(sheet, userId) {
     var targetRow = findUserId(sheet, userId);
@@ -199,6 +236,14 @@ function getPreExpYear(sheet, userId) {
         return 0;
     }
     return 1;
+}
+
+// 今の悩みを入力する
+function setPreExpIssue(sheet, userId, value) {
+    var writeRow = findUserId(sheet, userId);
+  var writeCell = 'G' + (writeRow).toString(10);
+  
+    sheet.getRange(writeCell).setValue(value);
 }
 
 // 悩みが入力されているか
