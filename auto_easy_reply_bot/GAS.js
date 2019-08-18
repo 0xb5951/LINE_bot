@@ -1,6 +1,7 @@
 // LINE developersのメッセージ送受信設定に記載のアクセストークン
 var ACCESS_TOKEN = 'token';
 
+
 function test() {
     // シート取得
     var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
@@ -16,18 +17,13 @@ function test() {
   if (0 == findUserId(sheet, userId)) {
     addNewUserProfile(sheet, userId, nickName);
   }
-  sendMessage(replyToken, 'test');
+  setPreExpFlag(sheet, userId);
 }
 
 function doPost(e) {
     var event = JSON.parse(e.postData.contents).events[0];
     // WebHookで受信した応答用Token
     var replyToken = event.replyToken;
-
-    // 先行体験ボタンが押されたときの処理
-    if (event.type == 'postback' && event.postback.data == "pushButton") {
-        sendMessage(replyToken, "使っている楽器を教えて！");
-    }
 
     // ユーザ情報を取得
     var userId = event.source.userId;
@@ -40,14 +36,18 @@ function doPost(e) {
     // ユーザIDが登録されてなかったら
     if (0 == findUserId(sheet, userId)) {
         addNewUserProfile(sheet, userId, nickName);
-        sendMessage(replyToken, '未登録');
+    }
+
+    // 先行体験ボタンが押されたときの処理
+    if (event.type == 'postback' && event.postback.data == "pushButton") {
+        setPreExpFlag(sheet, userId);
+        sendMessage(replyToken, "使っている楽器を教えて！");
     }
 
     sendFollowMessage(replyToken); 
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
         sendFollowMessage(replyToken);
-        // 先行体験フォームを出す
     }
 
     // テキストが送信された時の処理
@@ -97,6 +97,14 @@ function addNewUserProfile(sheet, userId, nickName) {
 
     sheet.getRange(writeCellA).setValue(userId);
     sheet.getRange(writeCellB).setValue(nickName);
+}
+
+// 先行体験申し込みフラグを立てる
+function setPreExpFlag(sheet, userId) {
+    var writeRow = findUserId(sheet, userId);
+  var writeCell = 'C' + (writeRow).toString(10);
+  
+    sheet.getRange(writeCell).setValue(1);
 }
  
 // ユーザーネームを取得してくる関数
