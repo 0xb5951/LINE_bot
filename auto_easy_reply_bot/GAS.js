@@ -57,24 +57,24 @@ function sendMessage(replyToken, message) {
             'replyToken': replyToken,
             'messages': [{
                 'type': 'text',
-                'text': message + 'ンゴ',
+                'text': message,
             }],
         }),
     });
     return 0;
 }
 
-// userIdとnicknameを登録する
+// userIdとnickNameを登録する
 function addNewUserProfile(sheet, userId, nickName) {
     // 最終行を取得
-    var last_row = findLastRow(sheet, 'A');
+    var lastRow = findLastRow(sheet, 'A');
 
     //　書き込む場所を決定する
-    var write_cell_a = 'A' + (last_row).toString(10);
-    var write_cell_b = 'B' + (last_row).toString(10);
+    var writeCellA = 'A' + (lastRow).toString(10);
+    var writeCellB = 'B' + (lastRow).toString(10);
 
-    sheet.getRange(write_cell_a).setValue(userId);
-    sheet.getRange(write_cell_b).setValue(nickName);
+    sheet.getRange(writeCellA).setValue(userId);
+    sheet.getRange(writeCellB).setValue(nickName);
 }
  
 // ユーザーネームを取得してくる関数
@@ -91,22 +91,20 @@ function getUserProfile(userId) {
 // 指定列の[最終行の行番号」を返す
 // (値が途切れていないことが前提)
 function findLastRow(sheet, col) {
-
     //指定の列を二次元配列に格納する※シート全体の最終行までとする
-    var ColValues = sheet.getRange((col + ':' + col)).getValues()
-
+    var colValues = sheet.getRange((col + ':' + col)).getValues()
     //二次元配列のなかで、データが存在する要素のlengthを取得する
-    var lastRow = ColValues.filter(String).length;
+    var lastRow = colValues.filter(String).length;
 
     return lastRow + 1;
 }
 
-// UserIdが存在しているかを確認する
-function FindUserId(sheet, Id) {
-    var dat = sheet.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
+// userIdが存在しているかを確認する
+function findUserId(sheet, userId) {
+    var date = sheet.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
  
-    for(var i=1;i<dat.length;i++){
-      if(dat[i][col-1] === ID){
+    for(var i=1;i<date.length;i++){
+      if(date[i][col-1] === userId){
         return i+1;
       }
     }
