@@ -8,20 +8,20 @@ function doPost(e) {
 
     // ユーザ情報を取得
     var userId = event.source.userId;
-    var nickname = getUserProfile(userId);
+    var nickName = getUserProfile(userId);
 
     // シート取得
     var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
     var sheet = ss.getSheetByName('登録ユーザ一覧');
 
-    // ユーザIDが登録されてなかったら
-    if (FindUserId(sheet, userId) =! 0) {
-
-    } 
-
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
-        followMessage(replyToken);
+        sendFollowMessage(replyToken);
+
+        // ユーザIDが登録されてなかったら
+        if (FindUserId(sheet, userId) =! 0) {
+            addNewUserProfile(sheet, userId, nickName);
+        }
     }
 
     // テキストが送信された時の処理
@@ -35,7 +35,7 @@ function doPost(e) {
 
 
 // 登録時のアンケート導線
-function followMessage(replyToken) {
+function sendFollowMessage(replyToken) {
     var sendtext = "NOIABの先行体験をご希望の方は下記をご記入ください！\n \
     楽器やレベルで対象に選出されましたら別途先行体験のご案内を送らさせていただきます。";
 
@@ -76,7 +76,7 @@ function addNewUserProfile(sheet, userId, nickName) {
     sheet.getRange(write_cell_a).setValue(userId);
     sheet.getRange(write_cell_b).setValue(nickName);
 }
-
+ 
 // ユーザーネームを取得してくる関数
 function getUserProfile(userId) {
     var url = 'https://api.line.me/v2/bot/profile/' + userId;
