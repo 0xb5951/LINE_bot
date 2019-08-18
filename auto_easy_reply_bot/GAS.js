@@ -22,18 +22,6 @@ function doPost(e) {
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
         followMessage(replyToken);
-        // 最終行を取得
-        var last_row = findLastRow(sheet, 'A');
-
-        //　書き込む場所を決定する
-        var write_cell_a = 'A' + (last_row).toString(10);
-        var write_cell_b = 'B' + (last_row).toString(10);
-
-
-        // データ入力
-        sheet.getRange(write_cell_a).setValue(userId);
-        sheet.getRange(write_cell_b).setValue(nickname);
-
     }
 
     // テキストが送信された時の処理
@@ -76,7 +64,20 @@ function sendMessage(replyToken, message) {
     return 0;
 }
 
-// profileを取得してくる関数
+// userIdとnicknameを登録する
+function addNewUserProfile(sheet, userId, nickName) {
+    // 最終行を取得
+    var last_row = findLastRow(sheet, 'A');
+
+    //　書き込む場所を決定する
+    var write_cell_a = 'A' + (last_row).toString(10);
+    var write_cell_b = 'B' + (last_row).toString(10);
+
+    sheet.getRange(write_cell_a).setValue(userId);
+    sheet.getRange(write_cell_b).setValue(nickName);
+}
+
+// ユーザーネームを取得してくる関数
 function getUserProfile(userId) {
     var url = 'https://api.line.me/v2/bot/profile/' + userId;
     var userProfile = UrlFetchApp.fetch(url, {
