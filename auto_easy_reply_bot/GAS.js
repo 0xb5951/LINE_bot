@@ -163,7 +163,7 @@ function getPreExpStatus(sheet, userId) {
 // 登録完了フラグを立てる
 function setFormEndFlag(sheet, userId) {
     var writeRow = findUserId(sheet, userId);
-  var writeCell = 'I' + (writeRow).toString(10);
+  var writeCell = 'J' + (writeRow).toString(10);
   
     sheet.getRange(writeCell).setValue(1);
 }
@@ -171,7 +171,7 @@ function setFormEndFlag(sheet, userId) {
 // 登録完了フラグが立っているか
 function checkFormEndFlag(sheet, userId) {
     var writeRow = findUserId(sheet, userId);
-    var targetCell = 'I' + (writeRow).toString(10);
+    var targetCell = 'J' + (writeRow).toString(10);
   
     if (sheet.getRange(targetCell).isBlank()) {
         return 0;
@@ -198,10 +198,29 @@ function getPreExpInstu(sheet, userId) {
     return 1;
 }
 
+// 年齢情報を入力する 
+function setPreExpAge(sheet, userId, value) {
+    var writeRow = findUserId(sheet, userId);
+  var writeCell = 'E' + (writeRow).toString(10);
+  
+    sheet.getRange(writeCell).setValue(value);
+}
+
+// 年齢情報が入力されているか
+function getPreExpAge(sheet, userId) {
+    var targetRow = findUserId(sheet, userId);
+    var targetCell = 'E' + (targetRow).toString(10);
+
+    if (sheet.getRange(targetCell).isBlank()) {
+        return 0;
+    }
+    return 1;
+}
+
 // 都道府県を入力する
 function setPreExpPref(sheet, userId, value) {
     var writeRow = findUserId(sheet, userId);
-  var writeCell = 'E' + (writeRow).toString(10);
+  var writeCell = 'F' + (writeRow).toString(10);
   
     sheet.getRange(writeCell).setValue(value);
 }
@@ -209,7 +228,7 @@ function setPreExpPref(sheet, userId, value) {
 // 都道府県が入力されているか
 function getPreExpPref(sheet, userId) {
     var targetRow = findUserId(sheet, userId);
-    var targetCell = 'E' + (targetRow).toString(10);
+    var targetCell = 'F' + (targetRow).toString(10);
 
     if (sheet.getRange(targetCell).isBlank()) {
         return 0;
@@ -220,7 +239,7 @@ function getPreExpPref(sheet, userId) {
 // 経験年数を入力する
 function setPreExpYear(sheet, userId, value) {
     var writeRow = findUserId(sheet, userId);
-  var writeCell = 'F' + (writeRow).toString(10);
+  var writeCell = 'G' + (writeRow).toString(10);
   
     sheet.getRange(writeCell).setValue(value);
 }
@@ -228,7 +247,7 @@ function setPreExpYear(sheet, userId, value) {
 // 経験年数が入力されているか
 function getPreExpYear(sheet, userId) {
     var targetRow = findUserId(sheet, userId);
-    var targetCell = 'F' + (targetRow).toString(10);
+    var targetCell = 'G' + (targetRow).toString(10);
 
     if (sheet.getRange(targetCell).isBlank()) {
         return 0;
@@ -239,7 +258,7 @@ function getPreExpYear(sheet, userId) {
 // 今の悩みを入力する
 function setPreExpIssue(sheet, userId, value) {
     var writeRow = findUserId(sheet, userId);
-  var writeCell = 'G' + (writeRow).toString(10);
+  var writeCell = 'I' + (writeRow).toString(10);
   
     sheet.getRange(writeCell).setValue(value);
 }
@@ -247,7 +266,7 @@ function setPreExpIssue(sheet, userId, value) {
 // 悩みが入力されているか
 function getPreExpIssue(sheet, userId) {
     var targetRow = findUserId(sheet, userId);
-    var targetCell = 'G' + (targetRow).toString(10);
+    var targetCell = 'I' + (targetRow).toString(10);
 
     if (sheet.getRange(targetCell).isBlank()) {
         return 0;
