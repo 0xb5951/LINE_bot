@@ -24,6 +24,11 @@ function doPost(e) {
     // WebHookで受信した応答用Token
     var replyToken = event.replyToken;
 
+    // 先行体験ボタンが押されたときの処理
+    if (event.type == 'postback' && event.postback.data == "pushButton") {
+        sendMessage(replyToken, "使っている楽器を教えて！");
+    }
+
     // ユーザ情報を取得
     var userId = event.source.userId;
     var nickName = getUserProfile(userId);
@@ -37,6 +42,7 @@ function doPost(e) {
         addNewUserProfile(sheet, userId, nickName);
         sendMessage(replyToken, '未登録');
     }
+
     sendFollowMessage(replyToken); 
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
@@ -139,7 +145,7 @@ function sendPriorExpText(replyToken, sendtext) {
             },
           {
           "type": "flex",
-          "altText": "flex box",
+          "altText": "NOIABの先行体験をご希望の方はボタンをクリック！当選した方には、先行体験のご案内を送らさせていただきます！",
           "contents":
           {
             "type": "bubble",
@@ -156,9 +162,9 @@ function sendPriorExpText(replyToken, sendtext) {
                   "type": "button",
                   "style": "primary",
                   "action": {
-                    "type": "uri",
+                    "type": "postback",
                     "label": "先行体験に申し込む",
-                    "uri": "https://example.com"
+                    "data" : "pushButton"
                   }
                 }
               ]
