@@ -1,6 +1,22 @@
 // LINE developersのメッセージ送受信設定に記載のアクセストークン
 var ACCESS_TOKEN = 'token';
 
+function test() {
+    // シート取得
+    var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
+    var sheet = ss.getSheetByName('登録ユーザ一覧');
+  
+    // ユーザ情報を取得
+    var userId = 'gdageageagea2eqr3';
+    var nickName = 'teq2432';
+  
+  // ユーザIDが登録されてなかったら
+  if (0 == findUserId(sheet, userId)) {
+    addNewUserProfile(sheet, userId, nickName);
+  }
+}
+
+
 function doPost(e) {
     var event = JSON.parse(e.postData.contents).events[0];
     // WebHookで受信した応答用Token
@@ -14,14 +30,14 @@ function doPost(e) {
     var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
     var sheet = ss.getSheetByName('登録ユーザ一覧');
 
+          // ユーザIDが登録されてなかったら
+        if (0 == findUserId(sheet, userId)) {
+            addNewUserProfile(sheet, userId, nickName);
+        }
+  
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
         sendFollowMessage(replyToken);
-
-        // ユーザIDが登録されてなかったら
-        if (FindUserId(sheet, userId) =! 0) {
-            addNewUserProfile(sheet, userId, nickName);
-        }
     }
 
     // テキストが送信された時の処理
@@ -105,7 +121,7 @@ function findUserId(sheet, userId) {
  
     for(var i=1;i<date.length;i++){
       if(date[i][col-1] === userId){
-        return i+1;
+        return 1+i;
       }
     }
     return 0;
