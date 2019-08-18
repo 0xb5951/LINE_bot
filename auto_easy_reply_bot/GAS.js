@@ -314,7 +314,8 @@ function sendPriorExpText(replyToken, sendtext) {
               "contents": [
                 {
                   "type": "text",
-                  "text": "NOIABの先行体験をご希望の方はボタンをクリック！当選した方には、先行体験のご案内を送らさせていただきます！"
+                  "text": "NOIABの先行体験をご希望の方はボタンをクリック！当選した方には、先行体験のご案内を送らさせていただきます！",
+                  "wrap": true
                 },
                 {
                   "type": "button",
