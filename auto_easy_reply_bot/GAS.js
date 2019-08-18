@@ -35,13 +35,13 @@ function doPost(e) {
 
     // ユーザIDが登録されてなかったら
     if (0 == findUserId(sheet, userId)) {
+        preExpFlagDate(sheet, userId);
         addNewUserProfile(sheet, userId, nickName);
     }
 
     // 先行体験ボタンが押されたときの処理
     if (event.type == 'postback' && event.postback.data == "pushButton" && getPreExpStatus(sheet, userId) == 0) {
         setPreExpFlag(sheet, userId);
-        preExpFlagDate(sheet, userId);
         sendMessage(replyToken, "①アドバイスを受けてみたい楽器は？");
     }
 
