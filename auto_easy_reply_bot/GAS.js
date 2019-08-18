@@ -14,6 +14,11 @@ function doPost(e) {
     var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
     var sheet = ss.getSheetByName('登録ユーザ一覧');
 
+    // ユーザIDが登録されてなかったら
+    if (FindUserId(sheet, userId) =! 0) {
+
+    } 
+
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
         followMessage(replyToken);
@@ -50,8 +55,8 @@ function followMessage(replyToken) {
     return 0;
 }
 
+// メッセージを返す
 function sendMessage(replyToken, message) {
-    // 応答メッセージ用のAPI URL
     var url = 'https://api.line.me/v2/bot/message/reply';
 
     UrlFetchApp.fetch(url, {
@@ -93,4 +98,16 @@ function findLastRow(sheet, col) {
     var lastRow = ColValues.filter(String).length;
 
     return lastRow + 1;
+}
+
+// UserIdが存在しているかを確認する
+function FindUserId(sheet, Id) {
+    var dat = sheet.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
+ 
+    for(var i=1;i<dat.length;i++){
+      if(dat[i][col-1] === ID){
+        return i+1;
+      }
+    }
+    return 0;
 }
