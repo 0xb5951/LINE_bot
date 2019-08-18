@@ -41,6 +41,7 @@ function doPost(e) {
     // 先行体験ボタンが押されたときの処理
     if (event.type == 'postback' && event.postback.data == "pushButton" && getPreExpStatus(sheet, userId) == 0) {
         setPreExpFlag(sheet, userId);
+        preExpFlagDate(sheet, userId);
         sendMessage(replyToken, "①アドバイスを受けてみたい楽器は？");
     }
 
@@ -142,7 +143,7 @@ function addNewUserProfile(sheet, userId, nickName) {
     sheet.getRange(writeCellB).setValue(nickName);
 }
 
-// 先行体験申し込みフラグを立てる
+// 先行体験フラグを立てる
 function setPreExpFlag(sheet, userId) {
     var writeRow = findUserId(sheet, userId);
   var writeCell = 'C' + (writeRow).toString(10);
@@ -159,6 +160,17 @@ function getPreExpStatus(sheet, userId) {
         return 0;
     }
     return 1;
+}
+
+// 申し込んだ時間を記録する
+function preExpFlagDate(sheet, userId) {
+    var writeRow = findUserId(sheet, userId);
+    var writeCell = 'K' + (writeRow).toString(10);
+    
+    var date = new Date();
+    var nowDate = Utilities.formatDate( date, 'Asia/Tokyo', 'yyyy/MM/dd:hh:mm:s');
+
+    sheet.getRange(writeCell).setValue(nowDate);
 }
 
 // 登録完了フラグを立てる
