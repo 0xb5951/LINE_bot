@@ -16,8 +16,8 @@ function test() {
   if (0 == findUserId(sheet, userId)) {
     addNewUserProfile(sheet, userId, nickName);
   }
+  sendMessage(replyToken, 'test');
 }
-
 
 function doPost(e) {
     var event = JSON.parse(e.postData.contents).events[0];
@@ -31,16 +31,17 @@ function doPost(e) {
     // シート取得
     var ss = SpreadsheetApp.openById(SpreadsheetApp.getActiveSpreadsheet().getId());
     var sheet = ss.getSheetByName('登録ユーザ一覧');
-  
+
     // ユーザIDが登録されてなかったら
     if (0 == findUserId(sheet, userId)) {
         addNewUserProfile(sheet, userId, nickName);
         sendMessage(replyToken, '未登録');
     }
-  
+    sendFollowMessage(replyToken); 
     // ユーザーにbotがフォローされた場合の処理
     if (event.type == 'follow') {
         sendFollowMessage(replyToken);
+        // 先行体験フォームを出す
     }
 
     // テキストが送信された時の処理
@@ -55,11 +56,8 @@ function doPost(e) {
 
 // 登録時のアンケート導線
 function sendFollowMessage(replyToken) {
-    var sendtext = "NOIABの先行体験をご希望の方は下記をご記入ください！\n \
-    楽器やレベルで対象に選出されましたら別途先行体験のご案内を送らさせていただきます。";
-
-    sendMessage(replyToken, sendtext);
-    return 0;
+    var sendtext = "「いつでも、どこでも、何度でも。プロによる楽器のアドバイス」\n NOIAB（ノイア）への事前登録が完了しました！ここでは、リリース時のご案内や、先行体験の情報をお届けします! 通知が多いと感じた方は、この画面内のトーク設定より「通知」をOFFにしてみてくださいね\uDBC0\uDC77";
+    sendPriorExpText(replyToken, sendtext);
 }
 
 // メッセージを返す
@@ -127,4 +125,54 @@ function findUserId(sheet,userId) {
       }
     }
     return 0;
+}
+
+// 先行体験のリッチテキスト送信
+function sendPriorExpText(replyToken, sendtext) {
+    var url = 'https://api.line.me/v2/bot/message/reply';
+    var postData = {
+        "replyToken": replyToken,
+        "messages": [
+            {
+                'type': 'text',
+                'text': sendtext,
+            },
+          {
+          "type": "flex",
+          "altText": "flex box",
+          "contents":
+          {
+            "type": "bubble",
+            "body": {
+              "type": "box",
+              "layout": "vertical",
+              "spacing": "md",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "hello"
+                },
+                {
+                  "type": "button",
+                  "style": "primary",
+                  "action": {
+                    "type": "uri",
+                    "label": "先行体験に申し込む",
+                    "uri": "https://example.com"
+                  }
+                }
+              ]
+            }
+          }
+        }]
+      };
+
+    UrlFetchApp.fetch(url, {
+        'headers': {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + ACCESS_TOKEN,
+        },
+        'method': 'post',
+        'payload': JSON.stringify(postData),
+    });
 }
