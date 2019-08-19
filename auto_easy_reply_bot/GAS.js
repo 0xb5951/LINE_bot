@@ -35,7 +35,6 @@ function doPost(e) {
 
     // ユーザIDが登録されてなかったら
     if (0 == findUserId(sheet, userId)) {
-        preExpFlagDate(sheet, userId);
         addNewUserProfile(sheet, userId, nickName);
     }
 
